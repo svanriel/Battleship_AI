@@ -390,38 +390,56 @@ namespace Battleship_AI {
 		//set up the AI
 		AI* ai = new AI();
 
-		//create a simple setup
-		setup_p2[2][3] = 1;
-		setup_p2[3][3] = 1;
-		setup_p2[4][3] = 1;
-		setup_p2[0][0] = 1;
-
-		setup_p1[1][0] = 1;
-		setup_p1[9][9] = 1;
-		setup_p1[8][9] = 1;
+		//setup board
 
 		//player 1's turn
 		turn = false;
 
-		updateScreen();					
+		updateScreen();
 	}
-	
+
+		setup_p[10][10];
+		if (defaultSettings){
+			//create a default setup
+			setup_p[2][3] = 1;
+			setup_p[3][3] = 1;
+			setup_p[4][3] = 1;
+			setup_p[0][0] = 1;
+		}
+		else if (isPlayer) {
+			//player setup: player feedback
+			//temporarily use default setup
+			setup_p[2][3] = 1;
+			setup_p[3][3] = 1;
+			setup_p[4][3] = 1;
+			setup_p[0][0] = 1;
+		}
+		else{
+			//AI setup: use AI setup function
+			//temporarily use default setup
+			setup_p[2][3] = 1;
+			setup_p[3][3] = 1;
+			setup_p[4][3] = 1;
+			setup_p[0][0] = 1;
+		}
+	}
+
 	//This now works, don't look at it unless you need to (bleeeeeh UI graphics that aren't really made for this)
 	private: void updateScreen() {
 		Bitmap^ bitmap1 = gcnew Bitmap(300, 300);
 		Bitmap^ bitmap2 = gcnew Bitmap(300, 300);
 		for (int i = 0; i < 299; i++) {
-			for (int j = 0; j < 299; j++) {				
-				switch (grid_p1[i/30][j/30]) {
-					case 2:
-						bitmap1->SetPixel(i, j, System::Drawing::Color::Red);					
-						break;
-					case 1:
-						bitmap1->SetPixel(i, j, System::Drawing::Color::White);
-						break;
-					default:
-						bitmap1->SetPixel(i, j, System::Drawing::Color::Blue);
-						break;
+			for (int j = 0; j < 299; j++) {
+				switch (grid_p1[i / 30][j / 30]) {
+				case 2:
+					bitmap1->SetPixel(i, j, System::Drawing::Color::Red);
+					break;
+				case 1:
+					bitmap1->SetPixel(i, j, System::Drawing::Color::White);
+					break;
+				default:
+					bitmap1->SetPixel(i, j, System::Drawing::Color::Blue);
+					break;
 				}
 				switch (grid_p2[i / 30][j / 30]) {
 				case 2:
