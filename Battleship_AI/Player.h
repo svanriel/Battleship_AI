@@ -23,7 +23,6 @@ public:
 		//see, not much...
 	}
 
-	virtual 
 
 	//**MOVE**
 	//To be overwritten by implementing class
