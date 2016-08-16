@@ -391,6 +391,8 @@ namespace Battleship_AI {
 		AI* ai = new AI();
 
 		//setup board
+		initBoardSetup(setup_p1, true, true);
+		initBoardSetup(setup_p2, false, true);
 
 		//player 1's turn
 		turn = false;
@@ -398,6 +400,7 @@ namespace Battleship_AI {
 		updateScreen();
 	}
 
+	private: void initBoardSetup(int setup_p[10][10], bool isPlayer, bool defaultSettings) {
 		setup_p[10][10];
 		if (defaultSettings){
 			//create a default setup
