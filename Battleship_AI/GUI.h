@@ -75,6 +75,7 @@ namespace Battleship_AI {
 	private: System::Windows::Forms::Label^  label12;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::Label^  label10;
+	private: System::Windows::Forms::Label^  label13;
 
 	private:
 		/// <summary>
@@ -111,6 +112,7 @@ namespace Battleship_AI {
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->gameInfo = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
@@ -342,11 +344,21 @@ namespace Battleship_AI {
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Game Info";
 			// 
+			// label13
+			// 
+			this->label13->AutoSize = true;
+			this->label13->Location = System::Drawing::Point(606, 201);
+			this->label13->Name = L"label13";
+			this->label13->Size = System::Drawing::Size(141, 17);
+			this->label13->TabIndex = 7;
+			this->label13->Text = L"* Use for AI move too";
+			// 
 			// GUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(743, 547);
+			this->Controls->Add(this->label13);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->comboBox2);
