@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
 #include "Ship.h"
 
 class Player
@@ -9,25 +10,64 @@ class Player
 protected:
 	//binary array of own setup ('truth', where the ships are: 0 = no ship, 1 = ship but not yet hit, 2 = ship and hit)
 	int setup_p[10][10];
+
 	//array of guesses (note: grid_p are guesses by player on other player's setup: 0 = not yet guessed, 1 = guessed but no hit, 2 = guessed and hit)
 	int grid_p[10][10];
+
 	//array of all ships of the user
-	Ship ships[];
+	vector<Ship> ships;
+
+	//**Determine next move**
+	//overwrites a passed array
+	//To be overwritten by implementing class
+	virtual void determineMove(int (&moveArray)[2]);
 
 
 public:
 
 	//constructor, does really not much
-	Player::Player()
-	{
-		srand(time(NULL));
-		//see, not much...
+	Player::Player(){}
+
+	//getters
+	vector<Ship> getShips(){ return ships; }
+	bool lost(){
+		for (size_t i = 0; i < ships.size(); i++){
+			if (!(ships.at(i).getIsSunk())){ return false; } //not all ships are sunk yet
+		}
+		return true; //all ships sunk: player lost
 	}
 
+	//**SETUP**
+	//To be overwritten by implementing class
+	virtual void createSetup();
 
 	//**MOVE**
-	//To be overwritten by implementing class
-	virtual void move(int grid[10][10], int setup[10][10]);
+	//returns an array {X,Y} of the next shot
+	int (&move()) [2]{
+		int moveArray[] {-1, -1};
+		determineMove(moveArray);
+		return moveArray;
+	}
 
+	//**Method used when player is shot at**
+	//input: an array {X,Y} of the other players trial shot
+	//returns 0 when trial shot was a miss
+	//returns 1 when trial shot was a hit
+	//returns 2 when trial shot was a hit and the ship that was hit sank
+	int trialShotAt(int moveArray[2]){
+		size_t i = 0;
+		int shootVal = 0;
+		while (i < ships.size() && (shootVal == 0)){
+			shootVal = ships.at(i).shoot(moveArray[0], moveArray[1]);
+		}
+		setup_p[moveArray[0]][moveArray[1]] = shootVal;
+		return shootVal;
+	}
 
+	//**Method called after shot was done**
+	//input param shootVal: 0 when missed, 1 when hit, 2 when hit and sunk
+	//updates grid
+	void afterShot(int moveArray[2],int shootVal){
+		grid_p[moveArray[0]][moveArray[1]] = shootVal;
+	}
 };
