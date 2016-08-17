@@ -8,6 +8,9 @@
 class Player
 {
 protected:
+	//player is real player: true if real, false if AI
+	bool playerIsRealPlayer;
+
 	//binary array of own setup ('truth', where the ships are: 0 = no ship, 1 = ship but not yet hit, 2 = ship and hit)
 	int setup_p[10][10];
 
@@ -29,7 +32,10 @@ public:
 	Player::Player(){}
 
 	//getters
+	bool isRealPlayer(){ return playerIsRealPlayer; }
 	vector<Ship> getShips(){ return ships; }
+
+	//method determining if player has lost
 	bool lost(){
 		for (size_t i = 0; i < ships.size(); i++){
 			if (!(ships.at(i).getIsSunk())){ return false; } //not all ships are sunk yet
