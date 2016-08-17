@@ -4,27 +4,26 @@
 #include <time.h>
 #include "Player.h"
 
-class AI : public Player
+class RealPlayer : public Player
 {
-private:	
+private:
 	//**MOVE**
-	//This function performs a move for the AI, here just random
-	//override this in any AI
+	//This function performs a move for a real player
 	virtual void determineMove(int(&moveArray)[2]) override
 	{
 		do {
 			moveArray[0] = rand() % 10;
-			moveArray[1] = rand() % 10;	    
+			moveArray[1] = rand() % 10;
 		} while (Player::grid_p[moveArray[0]][moveArray[1]] != 0);
 	}
 
-public: 
+public:
 	//constructor, does really not much
-	AI::AI() : Player()
+	RealPlayer::RealPlayer() : Player()
 	{
 		srand(time(NULL));
 
-		Player::playerIsRealPlayer = false;
+		Player::playerIsRealPlayer = true;
 		//see, not much...
 	}
 

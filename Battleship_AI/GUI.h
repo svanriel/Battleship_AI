@@ -1,17 +1,22 @@
 #pragma once
 
 #include <iostream>
+#include "Player.h"
+#include "RealPlayer.h"
 #include "AI.h" //this includes everything
 #include "AI_Easy.cpp"
 
 //arrays of guesses (note: grid_p1 are guesses by player one on player 2's setup)
-int grid_p1[10][10];
-int grid_p2[10][10];
+int* grid_p1[10][10];
+int* grid_p2[10][10];
 //binary arrays of setups ('truth', where the ships are)
-int setup_p1[10][10];
-int setup_p2[10][10];
+int* setup_p1[10][10];
+int* setup_p2[10][10];
 
-bool turn; //turn of which player
+Player player1;
+Player player2;
+
+bool flag_turn; //turn of which player
 bool flag_AI = true; //we are using an AI (instead of human opponent)
 AI* ai;
 
@@ -388,18 +393,31 @@ namespace Battleship_AI {
 	private: System::Void GUI_Load(System::Object^  sender, System::EventArgs^  e) {
 
 		//set up the AI
-		AI* ai = new AI();
+		player1 = RealPlayer();
+		player2 = AI();
 
 		//setup board
-		initBoardSetup(setup_p1, true, true);
-		initBoardSetup(setup_p2, false, true);
+		//initBoardSetup(setup_p1, true, true);
+		//initBoardSetup(setup_p2, false, true);
+
+		player1.createSetup();
+		player2.createSetup();
 
 		//player 1's turn
-		turn = false;
+		flag_turn = false;
 
-		updateScreen();
+		updateScreen(player1.getGrid(), player2.getGrid());
 	}
 
+	//method describing a turn in which the playerAttacking tries to hit a ship of the playerAttacked
+	private: void turn(Player *playerAttacking, Player *playerAttacked){
+		int tempArray[] = { 0, 0 };
+		int *moveArray = playerAttacking->move(tempArray);
+		int shootVal = playerAttacked->trialShotAt(moveArray);
+		playerAttacked->afterShot(moveArray, shootVal);
+	}
+	
+	//pbb not necessary anymore
 	private: void initBoardSetup(int setup_p[10][10], bool isPlayer, bool defaultSettings) {
 		setup_p[10][10];
 		if (defaultSettings){
@@ -428,7 +446,7 @@ namespace Battleship_AI {
 	}
 
 	//This now works, don't look at it unless you need to (bleeeeeh UI graphics that aren't really made for this)
-	private: void updateScreen() {
+	private: void updateScreen(int (&grid_p1)[10][10], int (&grid_p2)[10][10]) {
 		Bitmap^ bitmap1 = gcnew Bitmap(300, 300);
 		Bitmap^ bitmap2 = gcnew Bitmap(300, 300);
 		for (int i = 0; i < 299; i++) {
@@ -474,39 +492,34 @@ namespace Battleship_AI {
 		if (comboBox1->SelectedIndex != -1 && comboBox2->SelectedIndex != -1) 
 		{
 			//player 1
-			if (!turn)
+			if (!flag_turn)
 			{
-				//check if guess correct (if there is a boat at [selected,selected])
-				if (setup_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
-					grid_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 2;
-				else
-					grid_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
-				updateScreen();
+				turn(&player1, &player2);
+
+				updateScreen(player1.getGrid(),player2.getGrid());
 				gameInfo->Text = "Player 2's move.";		
 			}
 		//player 2
 			else
 			{
-				if (flag_AI)
-					ai->move(grid_p2,setup_p1);
-				else
-			{
-				//check if guess correct (if there is a boat at [selected,selected])
-				if (setup_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
-					grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 2;
-				else
-					grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
+				turn(&player2, &player1);
+				/*{
+					//check if guess correct (if there is a boat at [selected,selected])
+					if (setup_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
+						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 2;
+					else
+						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
+				}*/
+				updateScreen(player1.getGrid(), player2.getGrid());
+				gameInfo->Text = "Player 1's move.";
 			}
-			updateScreen();			
-			gameInfo->Text = "Player 1's move.";
+
+		//change turn
+		flag_turn = !flag_turn;
 		}
+		else
+			cout << "Please enter a valid field." << endl;
 
-	//change turn
-	turn = !turn;
 	}
-else
-	cout << "Please enter a valid field." << endl;
-
-}
 };
 }

@@ -18,12 +18,12 @@ protected:
 	int grid_p[10][10];
 
 	//array of all ships of the user
-	vector<Ship> ships;
+	vector<Ship> ships = Ship::getDefaultShipVector();
 
 	//**Determine next move**
 	//overwrites a passed array
 	//To be overwritten by implementing class
-	virtual void determineMove(int (&moveArray)[2]);
+	virtual void determineMove(int(&moveArray)[2]){}
 
 
 public:
@@ -34,6 +34,9 @@ public:
 	//getters
 	bool isRealPlayer(){ return playerIsRealPlayer; }
 	vector<Ship> getShips(){ return ships; }
+	//get setup and grid
+	int (&getSetup())[10][10] { return setup_p; }
+	int(&getGrid())[10][10] { return grid_p; }
 
 	//method determining if player has lost
 	bool lost(){
@@ -45,12 +48,11 @@ public:
 
 	//**SETUP**
 	//To be overwritten by implementing class
-	virtual void createSetup();
+	virtual void createSetup(){};
 
 	//**MOVE**
 	//returns an array {X,Y} of the next shot
-	int (&move()) [2]{
-		int moveArray[] {-1, -1};
+	int(&move(int (&moveArray)[2]))[2]{
 		determineMove(moveArray);
 		return moveArray;
 	}

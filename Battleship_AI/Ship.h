@@ -11,8 +11,8 @@ private:
 	//int representing the size of the ship
 	size_t size;
 
-	//int representing if ship is horizontal (1 = true = horizontal, 0 = false = vertical)
-	int horizontal;
+	//bool representing if ship is horizontal (true = horizontal, false = vertical)
+	bool horizontal;
 
 	//ints representing X and Y position of the most upper-left pixel of ship
 	int X0;
@@ -35,7 +35,7 @@ private:
 		if (positions[position] == 1){ return 0; } //position already hit
 		else{ positions[position] = 1; }
 		//test if sunk
-		for (int i = 0; i < size; i++){
+		for (size_t i = 0; i < size; i++){
 			if (positions.at(i) == 0){ return 1; } //not yet sunk
 		}
 		//sunk
@@ -46,8 +46,13 @@ private:
 public:
 	//default constructor with default values
 	Ship::Ship() {}
+	//default constructor with adjustable size
+	Ship::Ship(size_t size){
+		this->size = size;
+		positions.resize(this->size);
+	}
 	//constructor
-	Ship::Ship(size_t size, int horizontal, int X0, int Y0) {
+	Ship::Ship(size_t size, bool horizontal, int X0, int Y0) {
 		this->size = size;
 		this->horizontal = horizontal;
 		this->X0 = X0;
@@ -57,8 +62,15 @@ public:
 
 	//getters
 	size_t getSize(){ return size; }
-	int getHorizontal(){ return horizontal; }
+	bool getHorizontal(){ return horizontal; }
 	bool getIsSunk(){ return isSunk; }
+
+	//method to be called during the initializing phase of the game: place the ships
+	void place(bool horizontal, int X0, int Y0){
+		this->horizontal = horizontal;
+		this->X0 = X0;
+		this->Y0 = Y0;
+	}
 
 	//method to test if ship is hit
 	//returns 0 if not hit (missed)
@@ -78,5 +90,20 @@ public:
 			//hit
 			return hit(Y - Y0);
 		}
+	}
+
+	//returns default ship vector of (old system, default (no input param.)):
+	//	1 ship of size 5
+	//	2 ships of size 4
+	//	4 ships of size 3
+	//	2 ships of size 2
+	//or (new system, input param. false):
+	//	1 ship of size 5
+	//	2 ships of size 4
+	//	6 ships of size 3
+	//	4 ships of size 2
+	static vector<Ship> getDefaultShipVector(bool old=true){
+		if (old){ return vector<Ship>({ Ship(5), Ship(4), Ship(4), Ship(3), Ship(3), Ship(3), Ship(3), Ship(2), Ship(2) }); } // old system
+		else{ return vector<Ship>({ Ship(5), Ship(4), Ship(4), Ship(3), Ship(3), Ship(3), Ship(3), Ship(3), Ship(3), Ship(2), Ship(2), Ship(2), Ship(2) }); } // new system
 	}
 }; 
