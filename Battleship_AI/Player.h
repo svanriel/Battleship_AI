@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdlib.h>
-#include "ship.h"
+#include <time.h>
+#include "Ship.h"
 
 class Player
 {

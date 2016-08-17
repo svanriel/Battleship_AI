@@ -86,6 +86,8 @@
     <ClInclude Include="GUI.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Ship.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GUI.resx">

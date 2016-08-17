@@ -1,6 +1,6 @@
 #pragma once
 
-class ship
+class Ship
 {
 private:
 	//int representing the size of the ship
@@ -12,8 +12,8 @@ private:
 	int Y0;
 	//array representing the positions
 	int positions[size];
-	//int representing if ship has already been sunk (0 = false, 1 = true)
-	int isSunk = 0;
+	//int representing if ship has already been sunk (0 = false, 1 = true -> das een boolean :P )
+	bool isSunk = 0;
 
 	//method to change 'float status' (isSunk) to 1
 	void sink(){ isSunk = 1; }
@@ -36,7 +36,7 @@ private:
 	
 public:
 	//constructor
-	ship::ship(int size, int horizontal, int X0, int Y0) {
+	Ship::Ship(int size, int horizontal, int X0, int Y0) {
 		this.size = size;
 		this.horizontal = horizontal;
 		this.X0 = X0;

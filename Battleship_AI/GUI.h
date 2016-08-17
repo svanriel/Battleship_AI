@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "AI.h"
+#include "AI.h" //this includes everything
 #include "AI_Easy.cpp"
 
 //arrays of guesses (note: grid_p1 are guesses by player one on player 2's setup)
