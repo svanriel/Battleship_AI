@@ -87,6 +87,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RealPlayer.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
   <ItemGroup>

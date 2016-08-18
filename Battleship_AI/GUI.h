@@ -13,12 +13,11 @@ int* grid_p2[10][10];
 int* setup_p1[10][10];
 int* setup_p2[10][10];
 
-Player player1;
-Player player2;
+Player* player1;
+Player* player2;
 
 bool flag_turn; //turn of which player
 bool flag_AI = true; //we are using an AI (instead of human opponent)
-AI* ai;
 
 namespace Battleship_AI {
 
@@ -393,28 +392,45 @@ namespace Battleship_AI {
 	private: System::Void GUI_Load(System::Object^  sender, System::EventArgs^  e) {
 
 		//set up the AI
-		player1 = RealPlayer();
-		player2 = AI();
+		player1 = new RealPlayer();
+		player2 = new AI();
 
 		//setup board
 		//initBoardSetup(setup_p1, true, true);
 		//initBoardSetup(setup_p2, false, true);
 
-		player1.createSetup();
-		player2.createSetup();
+		player1->createSetup();
+		player2->createSetup();
+		
+		for (int y = 0; y < 10; y++) {
+			for (int x = 0; x < 10; x++) {
+				cout << player1->getSetup()[x][y] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+		for (int y = 0; y < 10; y++) {
+			for (int x = 0; x < 10; x++) {
+				cout << player2->getSetup()[x][y] << " ";
+			}
+			cout << endl;
+		}
 
 		//player 1's turn
 		flag_turn = false;
 
-		updateScreen(player1.getGrid(), player2.getGrid());
+		updateScreen(player1->getGrid(), player2->getGrid());
+		//updateScreen(player1->getSetup(), player2->getSetup()); //debug
+
 	}
 
 	//method describing a turn in which the playerAttacking tries to hit a ship of the playerAttacked
 	private: void turn(Player *playerAttacking, Player *playerAttacked){
-		int tempArray[] = { 0, 0 };
-		int *moveArray = playerAttacking->move(tempArray);
+		int input[] = { comboBox1->SelectedIndex, comboBox2->SelectedIndex };
+		int *moveArray = playerAttacking->move(input);
 		int shootVal = playerAttacked->trialShotAt(moveArray);
-		playerAttacked->afterShot(moveArray, shootVal);
+		cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
+		playerAttacking->afterShot(moveArray, shootVal);
 	}
 	
 	//pbb not necessary anymore
@@ -485,7 +501,7 @@ namespace Battleship_AI {
 		pictureBox2->Image = bitmap2;
 	}
 
-//Click the guess-button
+	//Click the guess-button
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 		
 		//valid move?
@@ -493,16 +509,17 @@ namespace Battleship_AI {
 		{
 			//player 1
 			if (!flag_turn)
-			{
-				turn(&player1, &player2);
+			{				
+				turn(player1, player2);
 
-				updateScreen(player1.getGrid(),player2.getGrid());
+				updateScreen(player1->getGrid(),player2->getGrid());
+				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
 				gameInfo->Text = "Player 2's move.";		
 			}
 		//player 2
 			else
 			{
-				turn(&player2, &player1);
+				turn(player2, player1);
 				/*{
 					//check if guess correct (if there is a boat at [selected,selected])
 					if (setup_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
@@ -510,7 +527,8 @@ namespace Battleship_AI {
 					else
 						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
 				}*/
-				updateScreen(player1.getGrid(), player2.getGrid());
+				updateScreen(player1->getGrid(), player2->getGrid());
+				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
 				gameInfo->Text = "Player 1's move.";
 			}
 

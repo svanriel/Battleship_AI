@@ -18,7 +18,7 @@ protected:
 	int grid_p[10][10];
 
 	//array of all ships of the user
-	vector<Ship> ships = Ship::getDefaultShipVector();
+	vector<Ship*> ships = Ship::getDefaultShipVector();
 
 	//**Determine next move**
 	//overwrites a passed array
@@ -33,7 +33,7 @@ public:
 
 	//getters
 	bool isRealPlayer(){ return playerIsRealPlayer; }
-	vector<Ship> getShips(){ return ships; }
+	vector<Ship*> getShips(){ return ships; }
 	//get setup and grid
 	int (&getSetup())[10][10] { return setup_p; }
 	int(&getGrid())[10][10] { return grid_p; }
@@ -41,14 +41,14 @@ public:
 	//method determining if player has lost
 	bool lost(){
 		for (size_t i = 0; i < ships.size(); i++){
-			if (!(ships.at(i).getIsSunk())){ return false; } //not all ships are sunk yet
+			if (!(ships.at(i)->getIsSunk())){ return false; } //not all ships are sunk yet
 		}
 		return true; //all ships sunk: player lost
 	}
 
 	//**SETUP**
 	//To be overwritten by implementing class
-	virtual void createSetup(){};
+	virtual void createSetup() = 0;
 
 	//**MOVE**
 	//returns an array {X,Y} of the next shot
@@ -66,16 +66,23 @@ public:
 		size_t i = 0;
 		int shootVal = 0;
 		while (i < ships.size() && (shootVal == 0)){
-			shootVal = ships.at(i).shoot(moveArray[0], moveArray[1]);
+			shootVal = ships.at(i)->shoot(moveArray[0], moveArray[1]);
+			i++;
 		}
-		setup_p[moveArray[0]][moveArray[1]] = shootVal;
+		//now, the shootval is known (see above for what it means)
+		//update the setup to indicate it has been shot
+		if (shootVal!=0)
+			setup_p[moveArray[0]][moveArray[1]] = 2; //this ship has now been hit
 		return shootVal;
 	}
 
 	//**Method called after shot was done**
 	//input param shootVal: 0 when missed, 1 when hit, 2 when hit and sunk
 	//updates grid
-	void afterShot(int moveArray[2],int shootVal){
-		grid_p[moveArray[0]][moveArray[1]] = shootVal;
+	void afterShot(int moveArray[2],int shootVal){		
+		if (shootVal != 0) //hit
+			grid_p[moveArray[0]][moveArray[1]] = 2;
+		else
+			grid_p[moveArray[0]][moveArray[1]] = 1;
 	}
 };

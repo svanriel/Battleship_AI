@@ -77,7 +77,7 @@ public:
 	//returns 1 if hit
 	//returns 2 if hit and sunk
 	int shoot( int X, int Y ){
-		if (isSunk){ return 0; } //sunk ships cannot be hit again
+		if (isSunk){ return 0; } //sunk ships cannot be hit again (oh, really?)
 		if (horizontal){
 			if (Y != Y0){ return 0; } //not on the same line
 			if ((X < X0) || (X >= X0 + size)){ return 0; } //too much to the left or right
@@ -102,8 +102,8 @@ public:
 	//	2 ships of size 4
 	//	6 ships of size 3
 	//	4 ships of size 2
-	static vector<Ship> getDefaultShipVector(bool old=true){
-		if (old){ return vector<Ship>({ Ship(5), Ship(4), Ship(4), Ship(3), Ship(3), Ship(3), Ship(3), Ship(2), Ship(2) }); } // old system
-		else{ return vector<Ship>({ Ship(5), Ship(4), Ship(4), Ship(3), Ship(3), Ship(3), Ship(3), Ship(3), Ship(3), Ship(2), Ship(2), Ship(2), Ship(2) }); } // new system
+	static vector<Ship*> getDefaultShipVector(bool old=true){
+		if (old){ return vector<Ship*>({ new Ship(5), new Ship(4), new Ship(4), new Ship(3), new Ship(3), new Ship(3), new Ship(3), new Ship(2), new Ship(2) }); } // old system
+		else{ return vector<Ship*>({ new Ship(5), new Ship(4), new Ship(4), new Ship(3), new Ship(3), new Ship(3), new Ship(3), new Ship(3), new Ship(3), new Ship(2), new Ship(2), new Ship(2), new Ship(2) }); } // new system
 	}
 }; 
