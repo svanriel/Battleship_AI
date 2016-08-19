@@ -420,12 +420,16 @@ namespace Battleship_AI {
 	}
 
 	//method describing a turn in which the playerAttacking tries to hit a ship of the playerAttacked
-	private: void turn(Player *playerAttacking, Player *playerAttacked){
+	private: bool turn(Player *playerAttacking, Player *playerAttacked){
 		int input[] = { comboBox1->SelectedIndex, comboBox2->SelectedIndex };
 		int *moveArray = playerAttacking->move(input);
-		int shootVal = playerAttacked->trialShotAt(moveArray);
-		cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
-		playerAttacking->afterShot(moveArray, shootVal);
+		if (playerAttacking->isLegalMove(moveArray)){
+			int shootVal = playerAttacked->trialShotAt(moveArray);
+			cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
+			playerAttacking->afterShot(moveArray, shootVal);
+			return true;
+		}
+		else{ return false; }
 	}
 	
 	//pbb not necessary anymore
@@ -500,36 +504,44 @@ namespace Battleship_AI {
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 		
 		//valid move?
+		bool validMove = true;
 		if (comboBox1->SelectedIndex != -1 && comboBox2->SelectedIndex != -1) 
 		{
 			//player 1
 			if (!flag_turn)
 			{				
-				turn(player1, player2);
+				validMove = turn(player1, player2);
 
 				updateScreen(player1->getGrid(),player2->getGrid());
 				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
 
-				gameInfo->Text = "Player 2's move.";
+				if (validMove){
+					//change turn
+					gameInfo->Text = "Player 2's move.";
+					flag_turn = !flag_turn;
+				}
+				else{ cout << "Please enter a valid field." << endl; }
 			}
 		//player 2
 			else
 			{
-				turn(player2, player1);
+				validMove = turn(player2, player1);
 				/*{
 					//check if guess correct (if there is a boat at [selected,selected])
 					if (setup_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
 						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 2;
 					else
 						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
-				}*/
+				}*/ //DEBUG: wss niet meer nodig
 				updateScreen(player1->getGrid(), player2->getGrid());
 				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
-				gameInfo->Text = "Player 1's move.";
+				if (validMove){
+					//change turn
+					gameInfo->Text = "Player 1's move."; 
+					flag_turn = !flag_turn;
+				}
+				else{ cout << "Please enter a valid field." << endl; }
 			}
-
-		//change turn
-		flag_turn = !flag_turn;
 		}
 		else
 			cout << "Please enter a valid field." << endl;

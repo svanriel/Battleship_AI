@@ -46,6 +46,11 @@ public:
 		return true; //all ships sunk: player lost
 	}
 
+	//method determining if move was legal (i.e. was not at a place that was already shot at)
+	bool isLegalMove(int *moveArray){
+		return (!grid_p[moveArray[0]][moveArray[1]]);
+	}
+
 	//**SETUP**
 	//To be overwritten by implementing class
 	virtual void createSetup() = 0;
