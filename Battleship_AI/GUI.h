@@ -79,7 +79,8 @@ namespace Battleship_AI {
 	private: System::Windows::Forms::Label^  label12;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::Label^  label10;
-	private: System::Windows::Forms::Label^  label13;
+
+
 
 	private:
 		/// <summary>
@@ -116,7 +117,6 @@ namespace Battleship_AI {
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->gameInfo = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
-			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
@@ -172,7 +172,7 @@ namespace Battleship_AI {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(420, 19);
+			this->label5->Location = System::Drawing::Point(416, 3);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(24, 17);
 			this->label5->TabIndex = 3;
@@ -181,7 +181,7 @@ namespace Battleship_AI {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(23, 42);
+			this->label4->Location = System::Drawing::Point(17, 20);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(17, 17);
 			this->label4->TabIndex = 2;
@@ -190,7 +190,7 @@ namespace Battleship_AI {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(53, 19);
+			this->label3->Location = System::Drawing::Point(53, 1);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(16, 17);
 			this->label3->TabIndex = 1;
@@ -198,12 +198,13 @@ namespace Battleship_AI {
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(46, 42);
+			this->pictureBox1->Location = System::Drawing::Point(40, 20);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(398, 375);
+			this->pictureBox1->Size = System::Drawing::Size(400, 400);
 			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
+			this->pictureBox1->Click += gcnew System::EventHandler(this, &GUI::pictureBox1_Click);
 			// 
 			// tabPage2
 			// 
@@ -233,7 +234,7 @@ namespace Battleship_AI {
 			// label12
 			// 
 			this->label12->AutoSize = true;
-			this->label12->Location = System::Drawing::Point(19, 41);
+			this->label12->Location = System::Drawing::Point(17, 20);
 			this->label12->Name = L"label12";
 			this->label12->Size = System::Drawing::Size(17, 17);
 			this->label12->TabIndex = 6;
@@ -242,7 +243,7 @@ namespace Battleship_AI {
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(428, 14);
+			this->label7->Location = System::Drawing::Point(416, 3);
 			this->label7->Name = L"label7";
 			this->label7->Size = System::Drawing::Size(24, 17);
 			this->label7->TabIndex = 5;
@@ -251,7 +252,7 @@ namespace Battleship_AI {
 			// label10
 			// 
 			this->label10->AutoSize = true;
-			this->label10->Location = System::Drawing::Point(55, 14);
+			this->label10->Location = System::Drawing::Point(49, 3);
 			this->label10->Name = L"label10";
 			this->label10->Size = System::Drawing::Size(16, 17);
 			this->label10->TabIndex = 4;
@@ -260,7 +261,7 @@ namespace Battleship_AI {
 			// label9
 			// 
 			this->label9->AutoSize = true;
-			this->label9->Location = System::Drawing::Point(49, 418);
+			this->label9->Location = System::Drawing::Point(37, 420);
 			this->label9->Name = L"label9";
 			this->label9->Size = System::Drawing::Size(131, 17);
 			this->label9->TabIndex = 1;
@@ -268,20 +269,21 @@ namespace Battleship_AI {
 			// 
 			// pictureBox2
 			// 
-			this->pictureBox2->Location = System::Drawing::Point(43, 41);
+			this->pictureBox2->Location = System::Drawing::Point(40, 20);
 			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(409, 374);
+			this->pictureBox2->Size = System::Drawing::Size(400, 400);
 			this->pictureBox2->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pictureBox2->TabIndex = 0;
 			this->pictureBox2->TabStop = false;
+			this->pictureBox2->Click += gcnew System::EventHandler(this, &GUI::pictureBox2_Click);
 			// 
 			// button1
 			// 
 			this->button1->Location = System::Drawing::Point(613, 159);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(118, 39);
+			this->button1->Size = System::Drawing::Size(118, 49);
 			this->button1->TabIndex = 1;
-			this->button1->Text = L"Guess";
+			this->button1->Text = L"Guess / AI Move";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &GUI::button1_Click);
 			// 
@@ -341,28 +343,18 @@ namespace Battleship_AI {
 			// groupBox1
 			// 
 			this->groupBox1->Controls->Add(this->gameInfo);
-			this->groupBox1->Location = System::Drawing::Point(16, 483);
+			this->groupBox1->Location = System::Drawing::Point(16, 487);
 			this->groupBox1->Name = L"groupBox1";
 			this->groupBox1->Size = System::Drawing::Size(690, 62);
 			this->groupBox1->TabIndex = 6;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Game Info";
 			// 
-			// label13
-			// 
-			this->label13->AutoSize = true;
-			this->label13->Location = System::Drawing::Point(606, 201);
-			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(141, 17);
-			this->label13->TabIndex = 7;
-			this->label13->Text = L"* Use for AI move too";
-			// 
 			// GUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(743, 547);
-			this->Controls->Add(this->label13);
+			this->ClientSize = System::Drawing::Size(743, 561);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->comboBox2);
@@ -402,8 +394,10 @@ namespace Battleship_AI {
 		player1->createSetup();
 		player2->createSetup();
 		
+		//clear guess grids and show setups in command line
 		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
+				player1->getGrid()[x][y] = 0;
 				cout << player1->getSetup()[x][y] << " ";
 			}
 			cout << endl;
@@ -411,6 +405,7 @@ namespace Battleship_AI {
 		cout << endl;
 		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
+				player2->getGrid()[x][y] = 0;
 				cout << player2->getSetup()[x][y] << " ";
 			}
 			cout << endl;
@@ -514,7 +509,8 @@ namespace Battleship_AI {
 
 				updateScreen(player1->getGrid(),player2->getGrid());
 				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
-				gameInfo->Text = "Player 2's move.";		
+
+				gameInfo->Text = "Player 2's move.";
 			}
 		//player 2
 			else
@@ -539,5 +535,45 @@ namespace Battleship_AI {
 			cout << "Please enter a valid field." << endl;
 
 	}
+
+	//move by clicking
+	private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {	
+	
+		if (!flag_turn) {
+			Point mouse = pictureBox1->PointToClient(Point(Control::MousePosition.X, Control::MousePosition.Y));
+
+			int a = pictureBox1->Size.Width / 10;
+
+			int x = mouse.X / a;
+			int y = mouse.Y / a;
+
+			comboBox1->SelectedIndex = x;
+			comboBox2->SelectedIndex = y;
+
+			//pretend that the 'guess' button was actually pressed
+			button1_Click(sender, e);
+
+		}
+
+}
+
+	//same for p2
+	private: System::Void pictureBox2_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (flag_turn) {
+			Point mouse = pictureBox1->PointToClient(Point(Control::MousePosition.X, Control::MousePosition.Y));
+
+			int a = pictureBox1->Size.Width / 10;
+
+			int x = mouse.X / a;
+			int y = mouse.Y / a;
+
+			comboBox1->SelectedIndex = x;
+			comboBox2->SelectedIndex = y;
+
+			//pretend that the 'guess' button was actually pressed
+			button1_Click(sender, e);
+
+		}
+}
 };
 }
