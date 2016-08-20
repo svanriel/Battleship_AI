@@ -84,7 +84,7 @@ public:
 	//**Method called after shot was done**
 	//input param shootVal: 0 when missed, 1 when hit, 2 when hit and sunk
 	//updates grid
-	void afterShot(int moveArray[2],int shootVal){		
+	virtual void afterShot(int moveArray[2],int shootVal){		
 		if (shootVal != 0) //hit
 			grid_p[moveArray[0]][moveArray[1]] = 2;
 		else

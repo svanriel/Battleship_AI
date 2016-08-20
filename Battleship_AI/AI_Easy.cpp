@@ -1,5 +1,9 @@
+#pragma once
+
 
 #include "AI.h"
+
+using namespace std;
 
 //This new class should override every function we would like to make in the AI
 //so we can make and compare new AIs without changing the main class or program ;)
@@ -12,6 +16,8 @@ protected:
 
 	bool seen[10][10];
 	vector<Ship*> shipsToBeFound = Ship::getDefaultShipVector();
+	vector<int> xoptions = vector<int>();
+	vector<int> yoptions = vector<int>();
 
 public:
 
@@ -23,47 +29,66 @@ public:
 		}
 	}
 
-	virtual void determineMove(int(&moveArray)[2]) override
-	{
-		vector<int> xoptions;
-		vector<int> yoptions;
+	vector<int> getXOptions(){ return xoptions; }
+	vector<int> getYOptions(){ return yoptions; }
 
-		//1. look for newly discovered hits
-		for (int y = 0; y < 10; y++) {
-			for (int x= 0; x < 10; x++) {
-				
-				//if not yet looked at
-				if (grid_p[x][y] == 2 && !seen[x][y]) {
+	virtual void afterShot(int moveArray[2], int shootVal) override {
+		Player::afterShot(moveArray, shootVal);
+		if (shootVal == 1){
+			//ship was found but not sunk: worth looking into
+			exploreOptions(moveArray);
+		}
+	}
 
-					//yay hardcoding					
-					int x0=x;
-					int y0=y;
-					if (x - 1>-1 && grid_p[x - 1][y] != 1)
-						x0 =  x - 1;
-					else if (x + 1<10 && grid_p[x + 1][y] != 1)
-						x0 = x + 1;
-					else if (y - 1>-1 && grid_p[x][y-1] != 1)
-						y0 = y-1 ;
-					else if (y + 1<10 && grid_p[x][y+1] != 1)
-						y0 = y+1;
-					if (x0 != x || y0 != y){ //uuugh, WHYYYY					
-						xoptions.push_back(x0);
-						yoptions.push_back(y0);
-					}
-					//take a random option
-					if (xoptions.size() > 0) {
-						int n = rand() % xoptions.size();					
-						moveArray[0] = xoptions[n];
-						moveArray[1] = yoptions[n];
-						//easy for now: when you have seen every square around a hit, don't look at it again
-						if (xoptions.size()==1)
-							seen[moveArray[0]][moveArray[1]] = true;
-						return;
-					}
-
-				}
+	//explore any options around the point that was shot at
+	void exploreOptions(int* moveArray){
+		int x = moveArray[0];
+		int y = moveArray[1];
+		//if not yet looked at
+		if (grid_p[x][y] == 2 && !seen[x][y]) {
+			//yay hardcoding	
+			if (x - 1>-1 && grid_p[x - 1][y] == 0){
+				xoptions.push_back(x - 1);
+				yoptions.push_back(y);
+			}
+			if (x + 1 < 10 && grid_p[x + 1][y] == 0){
+				xoptions.push_back(x + 1);
+				yoptions.push_back(y);
+			}
+			if (y - 1 > -1 && grid_p[x][y - 1] == 0){
+				xoptions.push_back(x);
+				yoptions.push_back(y - 1);
+			}
+			if (y + 1 < 10 && grid_p[x][y + 1] == 0){
+				xoptions.push_back(x);
+				yoptions.push_back(y + 1);
 			}
 		}
+	}
+
+	virtual void determineMove(int(&moveArray)[2]) override
+	{
+		//1. look for newly discovered hits
+		//take a random option
+		if (xoptions.size() > 0) {
+			int n = rand() % xoptions.size();
+			moveArray[0] = xoptions[n];
+			moveArray[1] = yoptions[n];
+			//erase element (and duplicates if any)
+			for (int i = xoptions.size() - 1; i > -1; i--){
+				if (xoptions[i] == moveArray[0] && yoptions[i] == moveArray[1]){
+					xoptions.erase(xoptions.begin() + i);
+					yoptions.erase(yoptions.begin() + i);
+				}
+			}
+
+			//DEBUG: easy for now: when you have seen every square around a hit, don't look at it again => remove
+			if (xoptions.size() == 0){
+				seen[moveArray[0]][moveArray[1]] = true;
+			}
+			return;
+		}
+
 		//else do random move
 		do {
 			moveArray[0] = rand() % 10;

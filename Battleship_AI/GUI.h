@@ -423,10 +423,18 @@ namespace Battleship_AI {
 	private: bool turn(Player *playerAttacking, Player *playerAttacked){
 		int input[] = { comboBox1->SelectedIndex, comboBox2->SelectedIndex };
 		int *moveArray = playerAttacking->move(input);
+		cout << "Shot " << moveArray[0] << ", " << moveArray[1] << endl; //DEBUG: remove line
 		if (playerAttacking->isLegalMove(moveArray)){
 			int shootVal = playerAttacked->trialShotAt(moveArray);
 			cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
 			playerAttacking->afterShot(moveArray, shootVal);
+			if (!playerAttacking->isRealPlayer()){
+				vector<int> currX = (((AI_Easy*)playerAttacking)->getXOptions());
+				vector<int> currY = (((AI_Easy*)playerAttacking)->getYOptions());
+				for (size_t i = 0; i < currX.size(); i++){
+					cout << currX[i] << '\t' << currY[i] << endl;
+				}
+			}
 			return true;
 		}
 		else{ return false; }
