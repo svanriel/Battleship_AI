@@ -385,7 +385,7 @@ namespace Battleship_AI {
 
 		//set up the AI
 		player1 = new RealPlayer();
-		player2 = new AI();
+		player2 = new AI_Easy();
 
 		//setup board
 		//initBoardSetup(setup_p1, true, true);
