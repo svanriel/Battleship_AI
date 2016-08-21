@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "AI.h"
 
 using namespace std;
@@ -41,7 +40,7 @@ public:
 	}
 
 	//explore any options around the point that was shot at
-	void exploreOptions(int* moveArray){
+	virtual void exploreOptions(int* moveArray){
 		int x = moveArray[0];
 		int y = moveArray[1];
 		//if not yet looked at
@@ -66,34 +65,34 @@ public:
 		}
 	}
 
+	//look at any options found. returns true if success and inserts option found in moveArray. returns false if no options were found
+	bool exploitOptions(int(&moveArray)[2]){
+		//if no options: return false
+		if (xoptions.size() == 0) { return false; }
+
+		//pick random option
+		int n = rand() % xoptions.size();
+		moveArray[0] = xoptions.at(n); //use at method for safety: operator[] is not safe, even when size() was used, especially when using erase
+		moveArray[1] = yoptions.at(n);
+		//erase element (and duplicates if any)
+		for (int i = xoptions.size() - 1; i > -1; i--){
+			if (xoptions.at(i) == moveArray[0] && yoptions.at(i) == moveArray[1]){ //here too
+				xoptions.erase(xoptions.begin() + i);
+				yoptions.erase(yoptions.begin() + i);
+			}
+		}
+		return true;
+	}
+
+
 	virtual void determineMove(int(&moveArray)[2]) override
 	{
-		//1. look for newly discovered hits
-		//take a random option
-		if (xoptions.size() > 0) {
-			int n = rand() % xoptions.size();
-			moveArray[0] = xoptions[n];
-			moveArray[1] = yoptions[n];
-			//erase element (and duplicates if any)
-			for (int i = xoptions.size() - 1; i > -1; i--){
-				if (xoptions[i] == moveArray[0] && yoptions[i] == moveArray[1]){
-					xoptions.erase(xoptions.begin() + i);
-					yoptions.erase(yoptions.begin() + i);
-				}
-			}
-
-			//DEBUG: easy for now: when you have seen every square around a hit, don't look at it again => remove
-			if (xoptions.size() == 0){
-				seen[moveArray[0]][moveArray[1]] = true;
-			}
-			return;
-		}
-
+		//look at poi's
+		if (exploitOptions(moveArray)){ return; }
 		//else do random move
 		do {
 			moveArray[0] = rand() % 10;
 			moveArray[1] = rand() % 10;
 		} while (grid_p[moveArray[0]][moveArray[1]] != 0);
-
 	}
 };

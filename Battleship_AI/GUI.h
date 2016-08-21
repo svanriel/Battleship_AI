@@ -427,7 +427,7 @@ namespace Battleship_AI {
 		if (playerAttacking->isLegalMove(moveArray)){
 			int shootVal = playerAttacked->trialShotAt(moveArray);
 			cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
-			playerAttacking->afterShot(moveArray, shootVal);
+			playerAttacking->afterShot(moveArray, shootVal); 
 			if (!playerAttacking->isRealPlayer()){
 				vector<int> currX = (((AI_Easy*)playerAttacking)->getXOptions());
 				vector<int> currY = (((AI_Easy*)playerAttacking)->getYOptions());

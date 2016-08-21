@@ -46,7 +46,7 @@ private:
 public:
 	//default constructor with default values
 	Ship::Ship() {}
-	//default constructor with adjustable size
+	//default constructor with preset size but no set position
 	Ship::Ship(size_t size){
 		this->size = size;
 		positions.resize(this->size);
