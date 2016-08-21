@@ -63,6 +63,8 @@ public:
 	//getters
 	size_t getSize(){ return size; }
 	bool getHorizontal(){ return horizontal; }
+	int getX0(){ return X0; }
+	int getY0(){ return Y0; }
 	bool getIsSunk(){ return isSunk; }
 
 	//method to be called during the initializing phase of the game: place the ships

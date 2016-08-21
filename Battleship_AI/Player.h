@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <iostream>
 #include <time.h>
 #include <vector>
 #include "Ship.h"
@@ -24,7 +25,6 @@ protected:
 	//overwrites a passed array
 	//To be overwritten by implementing class
 	virtual void determineMove(int(&moveArray)[2]){}
-
 
 public:
 
@@ -53,7 +53,87 @@ public:
 
 	//**SETUP**
 	//To be overwritten by implementing class
-	virtual void createSetup() = 0;
+	virtual void createSetup(){
+
+		//randomly place ships one by one starting with the largest
+		bool success = false;
+		while (!success){
+			//reset grid
+			int shipsPlaced = 0;
+			for (size_t i = 0; i < 10; i++){
+				for (size_t j = 0; j < 10; j++){
+					setup_p[i][j] = 0;
+				}
+			}
+			for (size_t i = 0; i < ships.size(); i++){
+				//parameter determining if ship has been successfully placed
+				success = false;
+				//counter determining if failrate is too high (hinting for an unsolvable setting)
+				int failCounter = 0;
+				//current ship to be placed
+				Ship* current = ships.at(i);
+				//ship position parameters
+				bool horizontal;
+				int x0, y0;
+
+				//try to place ship
+				while (!success){
+					//generate random position
+					horizontal = rand() % 2;
+					int val1 = rand() % (10 - current->getSize() + 1);
+					int val2 = rand() % (10);
+					if (horizontal){
+						x0 = val2;
+						y0 = val1;
+					}
+					else{
+						x0 = val1;
+						y0 = val2;
+					}
+
+					//test if ship can be placed
+					success = true;
+					for (size_t j = 0; j < current->getSize(); j++){
+						if (horizontal){
+							if (setup_p[x0][y0 + j]){
+								success = false;
+								break;
+							}
+						}
+						else{
+							if (setup_p[x0 + j][y0]){
+								success = false;
+								break;
+							}
+						}
+					}
+
+					if (success){
+						//ship was placed successfully
+						//update ship placement parameters
+						current->place(!horizontal, x0, y0);
+						shipsPlaced++;
+						//update grid
+						for (size_t j = 0; j < current->getSize(); j++){
+							if (horizontal){
+								setup_p[x0][y0 + j] = 1;
+							}
+							else{
+								setup_p[x0 + j][y0] = 1;
+							}
+						}
+					}
+					else{
+						//ship placing failed
+						failCounter++;
+						if (failCounter >= 100){ break; } //convergence not reached
+					}
+				}
+				if (failCounter >= 100){ break; } //convergence not reached: start over
+			}//for ships			
+		}//while no success
+		//all ships successfully placed
+	}
 
 	//**MOVE**
 	//returns an array {X,Y} of the next shot
@@ -84,7 +164,7 @@ public:
 	//**Method called after shot was done**
 	//input param shootVal: 0 when missed, 1 when hit, 2 when hit and sunk
 	//updates grid
-	virtual void afterShot(int moveArray[2],int shootVal){		
+	virtual void afterShot(int moveArray[2], int shootVal){
 		if (shootVal != 0) //hit
 			grid_p[moveArray[0]][moveArray[1]] = 2;
 		else

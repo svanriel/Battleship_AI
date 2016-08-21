@@ -28,7 +28,35 @@ namespace Battleship_AI {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace std;
+
+
+
+
+public class GameException : public exception{
+	//constructor
+	public: GameException::GameException(): exception(){}
+
 	
+};
+public class WinException : public GameException{
+private: 
+	Player *winner;
+	Player *loser;
+public: 
+	//constructor
+	WinException::WinException(Player *winner, Player *loser): GameException(){
+		winner = this->winner;
+		loser = this->loser;
+	}
+	
+	//getters
+	Player* getWinner(){ return winner; }
+	Player* getLoser(){ return loser; }
+};
+
+
+
+
 
 	/// <summary>
 	/// Summary for GUI
@@ -428,12 +456,16 @@ namespace Battleship_AI {
 			int shootVal = playerAttacked->trialShotAt(moveArray);
 			cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
 			playerAttacking->afterShot(moveArray, shootVal); 
-			if (!playerAttacking->isRealPlayer()){
+			if (typeid(playerAttacking)==typeid(AI_Easy())){ //print options
 				vector<int> currX = (((AI_Easy*)playerAttacking)->getXOptions());
 				vector<int> currY = (((AI_Easy*)playerAttacking)->getYOptions());
 				for (size_t i = 0; i < currX.size(); i++){
 					cout << currX[i] << '\t' << currY[i] << endl;
 				}
+			}
+			if (playerAttacked->lost()){
+				//end game: attacking player won
+				throw WinException(playerAttacking,playerAttacked);
 			}
 			return true;
 		}
@@ -510,50 +542,51 @@ namespace Battleship_AI {
 
 	//Click the guess-button
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-		
-		//valid move?
-		bool validMove = true;
-		if (comboBox1->SelectedIndex != -1 && comboBox2->SelectedIndex != -1) 
-		{
-			//player 1
-			if (!flag_turn)
-			{				
-				validMove = turn(player1, player2);
-
-				updateScreen(player1->getGrid(),player2->getGrid());
-				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
-
-				if (validMove){
-					//change turn
-					gameInfo->Text = "Player 2's move.";
-					flag_turn = !flag_turn;
-				}
-				else{ cout << "Please enter a valid field." << endl; }
-			}
-		//player 2
-			else
+		try{
+			//valid move?
+			bool validMove = true;
+			if (comboBox1->SelectedIndex != -1 && comboBox2->SelectedIndex != -1)
 			{
-				validMove = turn(player2, player1);
-				/*{
-					//check if guess correct (if there is a boat at [selected,selected])
-					if (setup_p1[comboBox1->SelectedIndex][comboBox2->SelectedIndex] == 1)
-						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 2;
-					else
-						grid_p2[comboBox1->SelectedIndex][comboBox2->SelectedIndex] = 1;
-				}*/ //DEBUG: wss niet meer nodig
-				updateScreen(player1->getGrid(), player2->getGrid());
-				//updateScreen(player1->getSetup(), player2->getSetup()); //debug mode
-				if (validMove){
-					//change turn
-					gameInfo->Text = "Player 1's move."; 
-					flag_turn = !flag_turn;
+				//player 1
+				if (!flag_turn)
+				{
+					validMove = turn(player1, player2);
+
+					updateScreen(player1->getGrid(), player2->getGrid());
+
+					if (validMove){
+						//change turn
+						gameInfo->Text = "Player 2's move.";
+						flag_turn = !flag_turn;
+					}
+					else{ cout << "Please enter a valid field." << endl; }
 				}
-				else{ cout << "Please enter a valid field." << endl; }
+				//player 2
+				else
+				{
+					validMove = turn(player2, player1);
+					updateScreen(player1->getGrid(), player2->getGrid());
+					if (validMove){
+						//change turn
+						gameInfo->Text = "Player 1's move.";
+						flag_turn = !flag_turn;
+					}
+					else{ cout << "Please enter a valid field." << endl; }
+				}
+			}
+			else
+				cout << "Please enter a valid field." << endl;
+
+		}
+		catch (WinException winception){
+			updateScreen(player1->getGrid(), player2->getGrid());
+			if (!flag_turn){
+				gameInfo->Text = "Player 1 wins.";
+			}
+			else{
+				gameInfo->Text = "Player 2 wins.";
 			}
 		}
-		else
-			cout << "Please enter a valid field." << endl;
-
 	}
 
 	//move by clicking
@@ -594,6 +627,10 @@ namespace Battleship_AI {
 			button1_Click(sender, e);
 
 		}
-}
+	}
+
+	
 };
+
+
 }
