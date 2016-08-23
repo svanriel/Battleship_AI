@@ -13,20 +13,12 @@ class AI_Easy : public AI
 	
 protected:
 
-	bool seen[10][10];
-	vector<Ship*> shipsToBeFound = Ship::getDefaultShipVector();
 	vector<int> xoptions = vector<int>();
 	vector<int> yoptions = vector<int>();
 
 public:
 
-	AI_Easy::AI_Easy() {
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				seen[i][j] = false;
-			}
-		}
-	}
+	AI_Easy::AI_Easy() { }
 
 	vector<int> getXOptions(){ return xoptions; }
 	vector<int> getYOptions(){ return yoptions; }
@@ -40,11 +32,11 @@ public:
 	}
 
 	//explore any options around the point that was shot at
-	virtual void exploreOptions(int* moveArray){
+	virtual void exploreOptions(int* moveArray) override {
 		int x = moveArray[0];
 		int y = moveArray[1];
 		//if not yet looked at
-		if (grid_p[x][y] == 2 && !seen[x][y]) {
+		if (grid_p[x][y] == 2) {
 			//yay hardcoding	
 			if (x - 1>-1 && grid_p[x - 1][y] == 0){
 				xoptions.push_back(x - 1);
@@ -66,7 +58,7 @@ public:
 	}
 
 	//look at any options found. returns true if success and inserts option found in moveArray. returns false if no options were found
-	bool exploitOptions(int(&moveArray)[2]){
+	bool exploitOptions(int(&moveArray)[2]) override {
 		//if no options: return false
 		if (xoptions.size() == 0) { return false; }
 
@@ -84,7 +76,7 @@ public:
 		return true;
 	}
 
-
+protected:
 	virtual void determineMove(int(&moveArray)[2]) override
 	{
 		//look at poi's

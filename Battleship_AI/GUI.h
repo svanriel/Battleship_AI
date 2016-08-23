@@ -608,12 +608,13 @@ public:
 			int x = mouse.X / a;
 			int y = mouse.Y / a;
 
-			comboBox1->SelectedIndex = x;
-			comboBox2->SelectedIndex = y;
+			if (x < 10 && y < 10){
+				comboBox1->SelectedIndex = x;
+				comboBox2->SelectedIndex = y;
 
-			//pretend that the 'guess' button was actually pressed
-			button1_Click(sender, e);
-
+				//pretend that the 'guess' button was actually pressed
+				button1_Click(sender, e);
+			}// else: ignore
 		}
 
 }
