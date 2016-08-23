@@ -5,6 +5,7 @@
 #include "RealPlayer.h"
 #include "AI.h" //this includes everything
 #include "AI_Easy.cpp"
+#include "AI_Medium.cpp"
 
 //arrays of guesses (note: grid_p1 are guesses by player one on player 2's setup)
 int* grid_p1[10][10];
@@ -413,7 +414,7 @@ public:
 
 		//set up the AI
 		player1 = new RealPlayer();
-		player2 = new AI_Easy();
+		player2 = new AI_Medium();
 
 		//setup board
 		//initBoardSetup(setup_p1, true, true);
@@ -455,7 +456,7 @@ public:
 		if (playerAttacking->isLegalMove(moveArray)){
 			int shootVal = playerAttacked->trialShotAt(moveArray);
 			cout << "Shot " << moveArray[0] << ", " << moveArray[1] << " result: " << shootVal << endl;
-			playerAttacking->afterShot(moveArray, shootVal); 
+			playerAttacking->afterShot(moveArray, shootVal); 			
 			if (typeid(playerAttacking)==typeid(AI_Easy())){ //print options
 				vector<int> currX = (((AI_Easy*)playerAttacking)->getXOptions());
 				vector<int> currY = (((AI_Easy*)playerAttacking)->getYOptions());
@@ -463,6 +464,13 @@ public:
 					cout << currX[i] << '\t' << currY[i] << endl;
 				}
 			}
+			else if (playerAttacking == player2) { //debugg
+				vector<std::array<int, 2>> list = ((AI_Medium*)playerAttacking)->getOptions();
+				for (size_t i = 0; i < list.size(); i++){
+					cout << list.at(i)[0] << '\t' << list.at(i)[1] << endl;
+				}
+			}
+
 			if (playerAttacked->lost()){
 				//end game: attacking player won
 				throw WinException(playerAttacking,playerAttacked);

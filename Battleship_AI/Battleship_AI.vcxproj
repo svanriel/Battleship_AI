@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AI_Easy.cpp" />
+    <ClCompile Include="AI_Medium.cpp" />
     <ClCompile Include="GUI.cpp" />
   </ItemGroup>
   <ItemGroup>
